@@ -11,6 +11,7 @@
       input { width: 100%; padding: 8px; margin-top: 5px; }
       button { margin-top: 15px; padding: 10px; background-color: #5cb85c; color: #fff; border: none; cursor: pointer; }
       #results { margin-top: 20px; }
+      #map { height: 400px; width: 100%; margin-top: 20px; }
     </style>
   </head>
   <body>
@@ -23,6 +24,7 @@
       <button type="button" onclick="calculateFare()">料金を計算</button>
     </form>
     <div id="results"></div>
+    <div id="map"></div>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iN2IjgG4JUX1UEkyp3DUUWupGUX5VTo&libraries=places"></script>
     <script>
@@ -40,6 +42,7 @@
             var distance = Math.ceil(response.rows[0].elements[0].distance.value / 1000); // キロメートル単位、小数点以下切り上げ
             var fare = calculateFareFromDistance(distance);
             document.getElementById('results').innerHTML = '推定料金: ¥' + fare + '<br>距離: ' + distance + ' km';
+            displayRoute(start, end);
           } else {
             document.getElementById('results').innerHTML = '距離の計算中にエラーが発生しました';
           }
@@ -62,6 +65,34 @@
 
         return baseFare + additionalFare;
       }
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 35.6895, lng: 139.6917}, // 初期マップ中心を東京に設定
+          zoom: 10 // 初期ズームレベル
+        });
+        window.map = map;
+        window.directionsService = new google.maps.DirectionsService();
+        window.directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+      }
+
+      function displayRoute(start, end) {
+        var request = {
+          origin: start,
+          destination: end,
+          travelMode: 'DRIVING'
+        };
+
+        directionsService.route(request, function(result, status) {
+          if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+          } else {
+            console.error('ルートの表示中にエラーが発生しました: ' + status);
+          }
+        });
+      }
+
+      window.onload = initMap;
     </script>
   </body>
 </html>
