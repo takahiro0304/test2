@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>タクシー料金計算</title>
+    <style>
+      body { font-family: Arial, sans-serif; }
+      h1 { color: #333; }
+      form { margin-bottom: 20px; }
+      label { display: block; margin-top: 10px; }
+      input { width: 100%; padding: 8px; margin-top: 5px; }
+      button { margin-top: 15px; padding: 10px; background-color: #5cb85c; color: #fff; border: none; cursor: pointer; }
+      #results { margin-top: 20px; }
+    </style>
+  </head>
+  <body>
+    <h1>タクシー料金計算機</h1>
+    <form id="fareForm">
+      <label for="start">出発地:</label>
+      <input type="text" id="start" name="start"><br><br>
+      <label for="end">目的地:</label>
+      <input type="text" id="end" name="end"><br><br>
+      <button type="button" onclick="calculateFare()">料金を計算</button>
+    </form>
+    <div id="results"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iN2IjgG4JUX1UEkyp3DUUWupGUX5VTo&libraries=places"></script>
+    <script>
+      function calculateFare() {
+        var start = document.getElementById('start').value;
+        var end = document.getElementById('end').value;
+
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+          origins: [start],
+          destinations: [end],
+          travelMode: 'DRIVING',
+        }, function(response, status) {
+          if (status == 'OK') {
+            var distance = response.rows[0].elements[0].distance.value / 1000; // キロメートル単位
+            var fare = calculateFareFromDistance(distance);
+            document.getElementById('results').innerHTML = '推定料金: ¥' + fare + '<br>距離: ' + distance + ' km';
+          } else {
+            document.getElementById('results').innerHTML = '距離の計算中にエラーが発生しました';
+          }
+        });
+      }
+
+      function calculateFareFromDistance(distance) {
+        var baseFare = 420; // 初乗り料金（円）
+        var perKmFare = 280; // キロメートルあたりの料金（円）
+        return baseFare + (distance * perKmFare);
+      }
+    </script>
+  </body>
+</html>
