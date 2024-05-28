@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>距離料金計算表テストWEBページ</title>
+    <title>距離料金</title>
     <style>
       body { font-family: Arial, sans-serif; }
       h1 { color: #333; }
@@ -14,11 +14,11 @@
     </style>
   </head>
   <body>
-    <h1>料金計算機</h1>
+    <h1>距離料金</h1>
     <form id="fareForm">
-      <label for="start">出発地:</label>
+      <label for="start">積み地:</label>
       <input type="text" id="start" name="start"><br><br>
-      <label for="end">目的地:</label>
+      <label for="end">納品地:</label>
       <input type="text" id="end" name="end"><br><br>
       <button type="button" onclick="calculateFare()">料金を計算</button>
     </form>
@@ -47,9 +47,20 @@
       }
 
       function calculateFareFromDistance(distance) {
-        var baseFare = 420; // 初乗り料金（円）
-        var perKmFare = 280; // キロメートルあたりの料金（円）
-        return baseFare + (distance * perKmFare);
+        var baseFare = 5000; // 20kmまでの料金
+        var additionalFare = 0;
+
+        if (distance > 20 && distance <= 50) {
+            additionalFare = (distance - 20) * 220;
+        } else if (distance > 50 && distance <= 100) {
+            additionalFare = (30 * 220) + ((distance - 50) * 170);
+        } else if (distance > 100 && distance <= 150) {
+            additionalFare = (30 * 220) + (50 * 170) + ((distance - 100) * 140);
+        } else if (distance > 150) {
+            additionalFare = (30 * 220) + (50 * 170) + (50 * 140) + ((distance - 150) * 120);
+        }
+
+        return baseFare + additionalFare;
       }
     </script>
   </body>
