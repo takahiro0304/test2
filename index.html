@@ -40,7 +40,7 @@
         }, function(response, status) {
           if (status == 'OK') {
             var distance = Math.ceil(response.rows[0].elements[0].distance.value / 1000); // キロメートル単位、小数点以下切り上げ
-            var fare = calculateFareFromDistance(distance);
+            var fare = calculateFareFromDistance(distance).toLocaleString() + '円税別';
             document.getElementById('results').innerHTML = '推定料金: ¥' + fare + '<br>距離: ' + distance + ' km';
             displayRoute(start, end);
           } else {
