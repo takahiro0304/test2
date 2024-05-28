@@ -31,7 +31,7 @@
     <div id="results"></div>
     <div id="map"></div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5iN2IjgG4JUX1UEkyp3DUUWupGUX5VTo&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
     <script>
       function calculateFare() {
         var start = document.getElementById('start').value;
@@ -47,11 +47,9 @@
             var distance = Math.ceil(response.rows[0].elements[0].distance.value / 1000); // キロメートル単位、小数点以下切り上げ
             var fare = calculateFareFromDistance(distance);
 
-            var fare1 = formatCurrency(fare1) + '税別';
-            var fare2 = formatCurrency(fare2) + '税別';
-            var fare3 = formatCurrency(fare3) + '税別';
+            var fareText = formatCurrency(fare) + '税別';
 
-            document.getElementById('results').innerHTML = '軽バン料金 + ' + fare1 + '円税別<br>軽幌料金 + ' + fare2 + '円税別<br>1t車料金 + ' + fare3 + '円税別<br>距離: ' + distance + ' km';
+            document.getElementById('results').innerHTML = '料金: ' + fareText + '<br>距離: ' + distance + ' km';
             displayRoute(start, end);
           } else {
             document.getElementById('results').innerHTML = '距離の計算中にエラーが発生しました';
