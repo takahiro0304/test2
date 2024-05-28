@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>距離料金</title>
+    <title>タクシー料金計算</title>
     <style>
       body { font-family: Arial, sans-serif; }
       h1 { color: #333; }
@@ -14,11 +14,11 @@
     </style>
   </head>
   <body>
-    <h1>距離料金</h1>
+    <h1>タクシー料金計算機</h1>
     <form id="fareForm">
-      <label for="start">積み地:</label>
+      <label for="start">出発地:</label>
       <input type="text" id="start" name="start"><br><br>
-      <label for="end">納品地:</label>
+      <label for="end">目的地:</label>
       <input type="text" id="end" name="end"><br><br>
       <button type="button" onclick="calculateFare()">料金を計算</button>
     </form>
@@ -37,7 +37,7 @@
           travelMode: 'DRIVING',
         }, function(response, status) {
           if (status == 'OK') {
-            var distance = response.rows[0].elements[0].distance.value / 1000; // キロメートル単位
+            var distance = Math.ceil(response.rows[0].elements[0].distance.value / 1000); // キロメートル単位、小数点以下切り上げ
             var fare = calculateFareFromDistance(distance);
             document.getElementById('results').innerHTML = '推定料金: ¥' + fare + '<br>距離: ' + distance + ' km';
           } else {
@@ -51,13 +51,13 @@
         var additionalFare = 0;
 
         if (distance > 20 && distance <= 50) {
-            additionalFare = (distance - 20) * 220;
+            additionalFare = Math.ceil((distance - 20) * 220);
         } else if (distance > 50 && distance <= 100) {
-            additionalFare = (30 * 220) + ((distance - 50) * 170);
+            additionalFare = Math.ceil((30 * 220) + ((distance - 50) * 170));
         } else if (distance > 100 && distance <= 150) {
-            additionalFare = (30 * 220) + (50 * 170) + ((distance - 100) * 140);
+            additionalFare = Math.ceil((30 * 220) + (50 * 170) + ((distance - 100) * 140));
         } else if (distance > 150) {
-            additionalFare = (30 * 220) + (50 * 170) + (50 * 140) + ((distance - 150) * 120);
+            additionalFare = Math.ceil((30 * 220) + (50 * 170) + (50 * 140) + ((distance - 150) * 120));
         }
 
         return baseFare + additionalFare;
